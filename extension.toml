@@ -1,0 +1,7 @@
+id = "arstotzka"
+name = "Arstotzka"
+description = "Ultra-vibrant dark themes for Zed with advanced features: 28 stunning variants with ultra-enhanced text colors (+40-100% saturation), version control integration, multiplayer cursors, predictive AI styling, glass morphism, 3 transparency levels, 3 blur intensities, rainbow indents, and 66+ extended syntax scopes. Professional HSL-based color grading."
+version = "0.1.0"
+schema_version = 1
+authors = ["Arstotzka Team"]
+repository = "https://github.com/1ay1/arstotzka-zed-theme.git"

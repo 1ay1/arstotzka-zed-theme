@@ -1,0 +1,73 @@
+name: Validate Themes
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Validate JSON files
+      run: |
+        echo "Validating theme JSON files..."
+        for file in themes/*.json; do
+          echo "Checking $file"
+          python -m json.tool "$file" > /dev/null
+          if [ $? -eq 0 ]; then
+            echo "✓ $file is valid"
+          else
+            echo "✗ $file is invalid"
+            exit 1
+          fi
+        done
+
+    - name: Check schema compliance
+      run: |
+        echo "Checking theme schema compliance..."
+        for file in themes/*.json; do
+          # Check for required fields
+          if ! grep -q '"$schema".*zed.dev/schema/themes' "$file"; then
+            echo "✗ $file missing schema declaration"
+            exit 1
+          fi
+          if ! grep -q '"name"' "$file"; then
+            echo "✗ $file missing name field"
+            exit 1
+          fi
+          if ! grep -q '"author"' "$file"; then
+            echo "✗ $file missing author field"
+            exit 1
+          fi
+          if ! grep -q '"themes"' "$file"; then
+            echo "✗ $file missing themes array"
+            exit 1
+          fi
+          echo "✓ $file has required fields"
+        done
+
+    - name: Validate extension.toml
+      run: |
+        echo "Validating extension.toml..."
+        if [ ! -f extension.toml ]; then
+          echo "✗ extension.toml not found"
+          exit 1
+        fi
+
+        # Check required fields
+        grep -q 'id = ' extension.toml || (echo "✗ Missing id field" && exit 1)
+        grep -q 'name = ' extension.toml || (echo "✗ Missing name field" && exit 1)
+        grep -q 'version = ' extension.toml || (echo "✗ Missing version field" && exit 1)
+        grep -q 'schema_version = ' extension.toml || (echo "✗ Missing schema_version field" && exit 1)
+
+        echo "✓ extension.toml is valid"
