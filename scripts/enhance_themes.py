@@ -113,34 +113,34 @@ TRANSPARENCY_CONFIGS = [
         "name": "Glass",
         "suffix": "Glass",
         "description": "Ultra-transparent glass effect",
-        "bg_opacity": "d9",
-        "panel_opacity": "cc",
-        "editor_opacity": "b3",
-        "gutter_opacity": "b3",
-        "border_boost": "1.2",
+        "bg_opacity": "99",
+        "panel_opacity": "80",
+        "editor_opacity": "66",
+        "gutter_opacity": "66",
+        "border_boost": "1.8",
         "glow_active": True,
     },
     {
         "name": "Transparent",
         "suffix": "Transparent",
         "description": "Balanced transparency",
-        "bg_opacity": "e6",
-        "panel_opacity": "d9",
-        "editor_opacity": "cc",
-        "gutter_opacity": "cc",
-        "border_boost": "1.1",
+        "bg_opacity": "b3",
+        "panel_opacity": "99",
+        "editor_opacity": "80",
+        "gutter_opacity": "80",
+        "border_boost": "1.5",
         "glow_active": True,
     },
     {
         "name": "Translucent",
         "suffix": "Translucent",
         "description": "Subtle see-through effect",
-        "bg_opacity": "f0",
-        "panel_opacity": "e6",
-        "editor_opacity": "e6",
-        "gutter_opacity": "e6",
-        "border_boost": "1.0",
-        "glow_active": False,
+        "bg_opacity": "cc",
+        "panel_opacity": "b3",
+        "editor_opacity": "99",
+        "gutter_opacity": "99",
+        "border_boost": "1.3",
+        "glow_active": True,
     },
 ]
 
@@ -150,11 +150,11 @@ BLUR_CONFIGS = [
         "name": "Frosted",
         "suffix": "Frosted",
         "description": "Heavy frosted glass effect",
-        "bg_opacity": "bf",
-        "panel_opacity": "b3",
-        "editor_opacity": "99",
-        "gutter_opacity": "99",
-        "border_boost": "1.3",
+        "bg_opacity": "80",
+        "panel_opacity": "66",
+        "editor_opacity": "40",
+        "gutter_opacity": "40",
+        "border_boost": "2.0",
         "glow_active": True,
         "glow_intensity": "high",
     },
@@ -162,11 +162,11 @@ BLUR_CONFIGS = [
         "name": "Blurred",
         "suffix": "Blurred",
         "description": "Medium blur with vibrancy",
-        "bg_opacity": "cc",
-        "panel_opacity": "bf",
-        "editor_opacity": "b3",
-        "gutter_opacity": "b3",
-        "border_boost": "1.2",
+        "bg_opacity": "99",
+        "panel_opacity": "80",
+        "editor_opacity": "66",
+        "gutter_opacity": "66",
+        "border_boost": "1.8",
         "glow_active": True,
         "glow_intensity": "medium",
     },
@@ -174,11 +174,11 @@ BLUR_CONFIGS = [
         "name": "Hazy",
         "suffix": "Hazy",
         "description": "Light blur, soft effect",
-        "bg_opacity": "d9",
-        "panel_opacity": "cc",
-        "editor_opacity": "cc",
-        "gutter_opacity": "cc",
-        "border_boost": "1.1",
+        "bg_opacity": "b3",
+        "panel_opacity": "99",
+        "editor_opacity": "80",
+        "gutter_opacity": "80",
+        "border_boost": "1.5",
         "glow_active": True,
         "glow_intensity": "low",
     },
@@ -538,17 +538,27 @@ def create_transparent_variant(
         variant["style"]["toolbar.background"] = "#00000000"
         variant["style"]["tab_bar.background"] = "#00000000"
 
-        # Keep popups opaque
-        variant["style"]["elevated_surface.background"] = bg_color
-        variant["style"]["surface.background"] = bg_color
+        # Keep popups slightly transparent for consistent look
+        variant["style"]["elevated_surface.background"] = hex_to_rgba(
+            bg_color, config["panel_opacity"]
+        )
+        variant["style"]["surface.background"] = hex_to_rgba(
+            bg_color, config["panel_opacity"]
+        )
 
-        # Enhance borders
-        vibrant_accent = enhance_color_vibrancy(accent_color, vibrancy=1.8)
-        border_factor = float(config["border_boost"]) * 1.5
+        # Dramatically enhance borders for better visibility
+        vibrant_accent = enhance_color_vibrancy(accent_color, vibrancy=2.2)
+        border_factor = float(config["border_boost"]) * 1.8
         variant["style"]["border.focused"] = brighten_color(
             vibrant_accent, border_factor
         )
         variant["style"]["border.selected"] = brighten_color(
+            vibrant_accent, border_factor
+        )
+        variant["style"]["panel.focused_border"] = brighten_color(
+            vibrant_accent, border_factor
+        )
+        variant["style"]["pane.focused_border"] = brighten_color(
             vibrant_accent, border_factor
         )
 
@@ -575,7 +585,7 @@ def create_blurred_variant(
             bg_color, config["bg_opacity"]
         )
 
-        # Fully transparent for blur
+        # Fully transparent for maximum blur visibility
         variant["style"]["editor.background"] = "#00000000"
         variant["style"]["editor.gutter.background"] = "#00000000"
         variant["style"]["terminal.background"] = "#00000000"
@@ -583,17 +593,27 @@ def create_blurred_variant(
         variant["style"]["toolbar.background"] = "#00000000"
         variant["style"]["tab_bar.background"] = "#00000000"
 
-        # Keep popups opaque
-        variant["style"]["elevated_surface.background"] = bg_color
-        variant["style"]["surface.background"] = bg_color
+        # Keep popups slightly transparent for consistent look
+        variant["style"]["elevated_surface.background"] = hex_to_rgba(
+            bg_color, config["panel_opacity"]
+        )
+        variant["style"]["surface.background"] = hex_to_rgba(
+            bg_color, config["panel_opacity"]
+        )
 
-        # Enhance borders for blur
-        vibrant_accent = enhance_color_vibrancy(accent_color, vibrancy=2.0)
-        border_factor = float(config["border_boost"]) * 1.5
+        # Dramatically enhance borders for blur visibility
+        vibrant_accent = enhance_color_vibrancy(accent_color, vibrancy=2.5)
+        border_factor = float(config["border_boost"]) * 2.0
         variant["style"]["border.focused"] = brighten_color(
             vibrant_accent, border_factor
         )
         variant["style"]["border.selected"] = brighten_color(
+            vibrant_accent, border_factor
+        )
+        variant["style"]["panel.focused_border"] = brighten_color(
+            vibrant_accent, border_factor
+        )
+        variant["style"]["pane.focused_border"] = brighten_color(
             vibrant_accent, border_factor
         )
 
